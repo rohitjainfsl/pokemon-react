@@ -6,6 +6,7 @@ import { useEffect, useState } from "react";
 function App() {
   const [allTypes, setAllTypes] = useState([]);
   const [pokemonsToDisplay, setPokemonsToDisplay] = useState([]);
+  const [pokemonsToDisplayCopy, setPokemonsToDisplayCopy] = useState([]);
   const [limit, setLimit] = useState(20);
   const [offset, setOffset] = useState(0);
   const [loading, setLoading] = useState(false);
@@ -17,6 +18,7 @@ function App() {
     setLoading(true);
     fetch20Pokemons();
   }, [offset]);
+  // console.log(allTypes);
 
   async function fetchAllTypes() {
     const response = await instance.get("/type/?limit=21");
@@ -42,6 +44,9 @@ function App() {
       setPokemonsToDisplay((prevPokemons) => {
         return [...prevPokemons, ...finalData];
       });
+      setPokemonsToDisplayCopy((prevPokemons) => {
+        return [...prevPokemons, ...finalData];
+      });
     } catch (error) {
       console.log(error);
       setLoading(false);
@@ -51,11 +56,27 @@ function App() {
   }
 
   function handleTypeChange(e) {
-    const copy = pokemonsToDisplay;
-    if (e.target.value === "all") {
-      setPokemonsToDisplay(copy);
-    } else {
-      
+    try {
+      setLoading(true);
+      const copy = pokemonsToDisplayCopy;
+      const finalCopy = [];
+      if (e.target.value === "all") {
+        console.log("copy", copy);
+        setPokemonsToDisplay(copy);
+      } else {
+        copy.forEach((object) => {
+          object.types.forEach((obj) => {
+            if (obj.type.name === e.target.value) finalCopy.push(object);
+          });
+        });
+        // console.log(finalCopy);
+        setPokemonsToDisplay(finalCopy);
+      }
+    } catch (error) {
+      console.log(error);
+      setLoading(false);
+    } finally {
+      setLoading(false);
     }
   }
   console.log(pokemonsToDisplay);
