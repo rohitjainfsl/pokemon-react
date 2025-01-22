@@ -59,18 +59,25 @@ function App() {
     try {
       setLoading(true);
       const copy = pokemonsToDisplayCopy;
-      const finalCopy = [];
+      // const finalCopy = [];
       if (e.target.value === "all") {
         console.log("copy", copy);
         setPokemonsToDisplay(copy);
       } else {
-        copy.forEach((object) => {
-          object.types.forEach((obj) => {
-            if (obj.type.name === e.target.value) finalCopy.push(object);
-          });
-        });
+        // copy.forEach((object) => {
+        //   object.types.forEach((obj) => {
+        //     if (obj.type.name === e.target.value) finalCopy.push(object);
+        //   });
+        // });
+
+        setPokemonsToDisplay(
+          pokemonsToDisplayCopy.filter((pokemon) =>
+            pokemon.types.some((type) => type.type.name === e.target.value)
+          )
+        );
+
         // console.log(finalCopy);
-        setPokemonsToDisplay(finalCopy);
+        // setPokemonsToDisplay(finalCopy);
       }
     } catch (error) {
       console.log(error);
