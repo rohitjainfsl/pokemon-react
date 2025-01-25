@@ -58,11 +58,11 @@ function App() {
   function handleTypeChange(e) {
     try {
       setLoading(true);
-      const copy = pokemonsToDisplayCopy;
+      // const copy = pokemonsToDisplayCopy;
       // const finalCopy = [];
       if (e.target.value === "all") {
-        console.log("copy", copy);
-        setPokemonsToDisplay(copy);
+        // console.log("copy", copy);
+        setPokemonsToDisplay(pokemonsToDisplayCopy);
       } else {
         // copy.forEach((object) => {
         //   object.types.forEach((obj) => {
@@ -78,6 +78,26 @@ function App() {
 
         // console.log(finalCopy);
         // setPokemonsToDisplay(finalCopy);
+      }
+    } catch (error) {
+      console.log(error);
+      setLoading(false);
+    } finally {
+      setLoading(false);
+    }
+  }
+
+  function searchPokemons(e) {
+    try {
+      if (e.target.value === "") {
+        const copy = pokemonsToDisplayCopy;
+        setPokemonsToDisplay(copy);
+      } else {
+        setPokemonsToDisplay(
+          pokemonsToDisplayCopy.filter((pokemon) =>
+            pokemon.name.includes(e.target.value)
+          )
+        );
       }
     } catch (error) {
       console.log(error);
@@ -122,6 +142,7 @@ function App() {
               placeholder="Search for anything..."
               type="text"
               name="search"
+              onChange={searchPokemons}
             />
           </label>
         </div>
@@ -132,29 +153,39 @@ function App() {
           <h1 className="text-center font-bold text-4xl">Loading...</h1>
         ) : (
           <div className="flex flex-wrap items-center justify-evenly gap-2">
-            {pokemonsToDisplay.map((obj) => {
-              return (
-                <div
-                  key={obj.id}
-                  className="pokemon w-[22%] h-64 mb-8 flex flex-col items-center"
-                >
-                  <img
-                    src={obj.sprites.other.dream_world.front_default}
-                    alt=""
-                    className="w-4/5 h-3/4"
-                  />
-                  <div className="content mt-2 text-center">
-                    <h3 className="text-lg font-bold capitalize">{obj.name}</h3>
-                    <div className="flex gap-1">
-                      <strong>Type: </strong>
-                      <p>
-                        {obj.types.map((object) => object.type.name).toString()}
-                      </p>
+            {pokemonsToDisplay.length > 0 ? (
+              pokemonsToDisplay.map((obj) => {
+                return (
+                  <div
+                    key={obj.id}
+                    className="pokemon w-[22%] h-64 mb-8 flex flex-col items-center"
+                  >
+                    <img
+                      src={obj.sprites.other.dream_world.front_default}
+                      alt=""
+                      className="w-4/5 h-3/4"
+                    />
+                    <div className="content mt-2 text-center">
+                      <h3 className="text-lg font-bold capitalize">
+                        {obj.name}
+                      </h3>
+                      <div className="flex gap-1">
+                        <strong>Type: </strong>
+                        <p>
+                          {obj.types
+                            .map((object) => object.type.name)
+                            .toString()}
+                        </p>
+                      </div>
                     </div>
                   </div>
-                </div>
-              );
-            })}
+                );
+              })
+            ) : (
+              <h1 className="text-center font-bold text-4xl">
+                No Pokemons Found
+              </h1>
+            )}
           </div>
         )}
       </div>
